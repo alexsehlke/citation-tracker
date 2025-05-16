@@ -35,7 +35,7 @@
       document.getElementById("output").textContent = "Fetching data...";
 
       try {
-        const response = await fetch("http://localhost:8000/api/citations", {
+        const response = await fetch("https://citation-backend.onrender.com/api/citations", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ api_key: apiKey, dois: dois })
