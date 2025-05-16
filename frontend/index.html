@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Citation Tracker</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; max-width: 800px; margin: auto; }
+    textarea, input { width: 100%; margin-top: 8px; }
+    button { padding: 10px 20px; margin-top: 10px; }
+    pre { background: #f4f4f4; padding: 10px; overflow: auto; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <h1>Scopus Citation Tracker</h1>
+
+  <form id="citationForm">
+    <label for="apiKey">Scopus API Key:</label>
+    <input type="text" id="apiKey" placeholder="Enter your Scopus API key" required />
+
+    <label for="doiList">DOIs (one per line):</label>
+    <textarea id="doiList" rows="10" placeholder="Enter DOIs here..." required></textarea>
+
+    <button type="submit">Fetch Citation Data</button>
+  </form>
+
+  <h2>Results</h2>
+  <pre id="output">Waiting for input...</pre>
+
+  <script>
+    document.getElementById("citationForm").onsubmit = async function (e) {
+      e.preventDefault();
+      const apiKey = document.getElementById("apiKey").value;
+      const dois = document.getElementById("doiList").value.trim().split("\n");
+
+      document.getElementById("output").textContent = "Fetching data...";
+
+      try {
+        const response = await fetch("http://localhost:8000/api/citations", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ api_key: apiKey, dois: dois })
+        });
+
+        const data = await response.json();
+        document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+      } catch (err) {
+        document.getElementById("output").textContent = "Error fetching data: " + err;
+      }
+    };
+  </script>
+</body>
+</html>
